@@ -1,4 +1,6 @@
-package library;
+package library.database;
+
+import library.Book;
 
 import java.util.ArrayList;
 import java.util.List;

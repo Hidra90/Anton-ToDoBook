@@ -1,12 +1,21 @@
 package library;
 
+import library.console_ui.*;
+import library.database.Database;
+import library.database.InMemoryDatabaseImpl;
+
 import java.util.Scanner;
 
 public class ToDoListApplication {
 
+    private static Database database = new InMemoryDatabaseImpl();
+    private static UIAction addBookUIAction = new AddBookUIAction(database);
+    private static UIAction getAddBookUIAction = new GetAllBookUIAction(database);
+    private static UIAction removeBookUIAction = new RemoveBookUIAction(database);
+    private static UIAction exitUIAction = new ExitUIAction(database);
+
     public static void main(String[] args) {
 
-        Database database = new InMemoryDatabaseImpl();
         while (true) {
             printProgramMenu();
             int menuNumber = getMenuNumberFromUser();
@@ -33,51 +42,23 @@ public class ToDoListApplication {
     public static void executeSelectMenuItem(Database database, int selectMenu) {
         switch (selectMenu) {
             case 1: {
-                addNewBookAction(database);
+                addBookUIAction.execute();
                 break;
             }
             case 2: {
-                printAllBooksAction(database);
+                getAddBookUIAction.execute();
                 break;
             }
             case 3: {
-                removeBookAction(database);
+                removeBookUIAction.execute();
                 break;
             }
             case 4: {
-                exitProgramAction();
+                exitUIAction.execute();
                 break;
             }
         }
     }
 
-    public static void exitProgramAction() {
-        System.out.println("Good by");
-        System.exit(0);
-    }
 
-    public static void printAllBooksAction(Database database) {
-        System.out.println("Books list:");
-        database.getAllBooks().forEach(System.out::println);
-        System.out.println("list end");
-    }
-
-    public static void addNewBookAction(Database database) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter book title:");
-        String bookTitle = scanner.nextLine();
-        System.out.println("Enter book author");
-        String bookAuthor = scanner.nextLine();
-        Book book = new Book(bookTitle, bookAuthor);
-        database.save(book);
-        System.out.println("Your book add to list");
-    }
-
-    public static void removeBookAction(Database database) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter book id to remove");
-        Long bookId = Long.parseLong(scanner.nextLine());
-        database.deleteById(bookId);
-        System.out.println("Your book remove to list");
-    }
 }
